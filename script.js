@@ -1,61 +1,99 @@
-:root {
-    --bg: #0f172a; --panel: #1e293b; --text: #f8fafc; --text-muted: #94a3b8;
-    --input-bg: #334155; --border: #334155; --accent: #6366f1; --success: #10b981; --danger: #f43f5e;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    let transactions = JSON.parse(localStorage.getItem('finance_elite_v5')) || [];
+    let isDark = true;
 
-[data-theme="light"] {
-    --bg: #f1f5f9; --panel: #ffffff; --text: #1e293b; --text-muted: #64748b;
-    --input-bg: #ffffff; --border: #e2e8f0;
-}
+    // --- GRÁFICAS CONFIG ---
+    const lineChart = new Chart(document.getElementById('lineChart').getContext('2d'), {
+        type: 'line',
+        data: { labels: [], datasets: [{ label: 'Balance', data: [], borderColor: '#6366f1', tension: 0.4, fill: true, backgroundColor: 'rgba(99, 102, 241, 0.1)' }] },
+        options: { 
+            responsive: true, maintainAspectRatio: false,
+            layout: { padding: { right: 40, top: 20, left: 10, bottom: 10 } },
+            plugins: { legend: { display: false } },
+            scales: { 
+                y: { ticks: { color: '#94a3b8', callback: v => '$' + v.toLocaleString() }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+            }
+        }
+    });
 
-body { 
-    font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); 
-    color: var(--text); margin: 0; padding: 20px; transition: 0.3s;
-}
+    const pieChart = new Chart(document.getElementById('pieChart').getContext('2d'), {
+        type: 'doughnut',
+        data: { labels: ['Comida', 'Ocio', 'Salud', 'Transporte', 'Otros'], datasets: [{ data: [0,0,0,0,0], backgroundColor: ['#fbbf24', '#3b82f6', '#f87171', '#10b981', '#94a3b8'], borderWeight: 0 }] },
+        options: { 
+            responsive: true, maintainAspectRatio: false,
+            layout: { padding: 20 },
+            plugins: { legend: { position: window.innerWidth < 768 ? 'bottom' : 'right', labels: { color: '#94a3b8', padding: 15 } } }
+        }
+    });
 
-.container { max-width: 1500px; margin: 0 auto; }
-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    // --- ACTUALIZAR DATOS ---
+    function updateUI() {
+        let bal = 0, inc = 0, exp = 0;
+        let cats = { "Comida": 0, "Ocio": 0, "Salud": 0, "Transporte": 0, "Otros": 0 };
+        document.getElementById('list').innerHTML = '';
+        let lineD = [], lineL = [];
 
-.logo { margin: 0; font-size: 1.4rem; color: var(--accent); }
+        transactions.forEach(t => {
+            if(t.cat === 'Ingreso') { bal += t.amt; inc += t.amt; }
+            else { bal -= t.amt; exp += t.amt; cats[t.cat] !== undefined ? cats[t.cat] += t.amt : cats["Otros"] += t.amt; }
+            lineD.push(bal); lineL.push(t.desc);
 
-/* KPIs */
-.kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; }
-.kpi-card { 
-    background: var(--panel); padding: 20px; border-radius: 20px; 
-    border: 1px solid var(--border); box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-.kpi-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
-.kpi-value { font-size: 1.8rem; font-weight: 800; margin-top: 5px; }
-.income-text { color: var(--success); }
-.expense-text { color: var(--danger); }
+            document.getElementById('list').innerHTML += `
+                <div class="t-item">
+                    <div><b>${t.desc}</b><br><small style="color:var(--text-muted)">${t.cat}</small></div>
+                    <div style="font-weight:800; color:${t.cat === 'Ingreso' ? 'var(--success)' : 'var(--danger)'}">
+                        ${t.cat === 'Ingreso' ? '+' : '-'}$${t.amt.toLocaleString()}
+                    </div>
+                </div>`;
+        });
 
-/* Layout Grid */
-.db-grid { display: grid; grid-template-columns: 320px 1fr 350px; gap: 20px; }
-.glass-panel { background: var(--panel); padding: 25px; border-radius: 24px; border: 1px solid var(--border); height: fit-content; }
+        document.getElementById('kpi-balance').innerText = `$${bal.toLocaleString()}`;
+        document.getElementById('kpi-in').innerText = `$${inc.toLocaleString()}`;
+        document.getElementById('kpi-out').innerText = `$${exp.toLocaleString()}`;
+        
+        lineChart.data.labels = lineL; lineChart.data.datasets[0].data = lineD;
+        lineChart.update();
+        pieChart.data.datasets[0].data = Object.values(cats);
+        pieChart.update();
 
-/* Forms */
-.form-group { margin-bottom: 15px; }
-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
-input, select { 
-    width: 100%; padding: 12px; background: var(--input-bg); 
-    border: 1px solid var(--border); border-radius: 10px; color: var(--text); box-sizing: border-box; font-family: inherit;
-}
+        localStorage.setItem('finance_elite_v5', JSON.stringify(transactions));
+    }
 
-.btn-add { 
-    width: 100%; padding: 15px; background: var(--accent); color: white; 
-    border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s;
-}
-.btn-add:hover { opacity: 0.9; transform: translateY(-2px); }
+    // --- EVENTOS ---
+    document.getElementById('addBtn').addEventListener('click', () => {
+        const d = document.getElementById('desc').value, a = parseFloat(document.getElementById('amt').value), c = document.getElementById('cat').value;
+        if(!d || isNaN(a)) return;
+        transactions.push({ desc: d, amt: a, cat: c });
+        updateUI();
+        document.getElementById('desc').value = ''; document.getElementById('amt').value = '';
+    });
 
-.btn-clear { background: none; border: none; color: var(--text-muted); cursor: pointer; width: 100%; margin-top: 15px; font-size: 0.7rem; font-weight: 700; }
+    document.getElementById('themeBtn').addEventListener('click', () => {
+        isDark = !isDark;
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        document.getElementById('themeBtn').innerText = isDark ? '🌙 MODO OSCURO' : '☀️ MODO CLARO';
+        updateUI();
+    });
 
-/* Charts */
-.charts-col { display: flex; flex-direction: column; gap: 20px; }
-.chart-container { background: var(--panel); padding: 20px; border-radius: 24px; border: 1px solid var(--border); height: 320px; }
-.chart-title { margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-muted); }
+    // --- ZOOM MODAL ---
+    const modal = document.getElementById('chartModal');
+    let zoomedChart;
+    function openZoom(src) {
+        modal.style.display = "block";
+        if(zoomedChart) zoomedChart.destroy();
+        zoomedChart = new Chart(document.getElementById('zoomedChart').getContext('2d'), {
+            type: src.config.type,
+            data: src.data,
+            options: { ...src.options, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'bottom', labels: { color: isDark?'#fff':'#333'} } } }
+        });
+    }
 
-/* History */
-.history-panel { max-height: 660px; overflow-y: auto; }
-.t-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    document.getElementById('lineChart').onclick = () => openZoom(lineChart);
+    document.getElementById('pieChart').onclick = () => openZoom(pieChart);
+    document.querySelector('.close-modal').onclick = () => modal.style.display = "none";
+    window.onclick = (e) => { if(e.target == modal) modal.style.display="none"; };
+    document.getElementById('clearBtn').onclick = () => { if(confirm("¿Borrar todo?")) {transactions=[]; updateUI();}};
 
-.theme-btn { background: var(--accent); color: white; border: none; padding: 10px 18px; border-radius: 50px; cursor: pointer; font-weight: 600; font-size: 0.75rem; }
+    updateUI();
+});
