@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FinanceFlow Elite Pro</title>
+    <title>FinanceFlow Elite v6.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
@@ -21,11 +21,11 @@
             <span class="kpi-label">BALANCE NETO</span>
             <div class="kpi-value" id="kpi-balance">$0</div>
         </div>
-        <div class="kpi-card">
+        <div class="kpi-card income-card">
             <span class="kpi-label">INGRESOS</span>
             <div class="kpi-value income-text" id="kpi-in">$0</div>
         </div>
-        <div class="kpi-card">
+        <div class="kpi-card expense-card">
             <span class="kpi-label">GASTOS</span>
             <div class="kpi-value expense-text" id="kpi-out">$0</div>
         </div>
@@ -33,14 +33,14 @@
 
     <div class="db-grid">
         <aside class="glass-panel form-section">
-            <h3>Registro</h3>
+            <h3>Nueva Operación</h3>
             <div class="form-group">
                 <label>Descripción</label>
-                <input type="text" id="desc" placeholder="Ej: Pago de Alquiler">
+                <input type="text" id="desc" placeholder="Ej: Pago Alquiler">
             </div>
             <div class="form-group">
                 <label>Monto</label>
-                <input type="number" id="amt" placeholder="0.00">
+                <input type="number" id="amt" placeholder="0.00" step="0.01">
             </div>
             <div class="form-group">
                 <label>Categoría</label>
@@ -53,24 +53,24 @@
                     <option value="Otros">📦 Otros</option>
                 </select>
             </div>
-            <button class="btn-add" id="addBtn">Registrar Operación</button>
-            <button class="btn-clear" id="clearBtn">BORRAR TODO</button>
+            <button class="btn-add" id="addBtn">Registrar</button>
+            <button class="btn-clear" id="clearBtn">Limpiar Historial</button>
         </aside>
 
-        <div class="charts-col">
-            <div class="chart-container">
-                <h4 class="chart-title">FLUJO DE PATRIMONIO</h4>
+        <main class="charts-col">
+            <div class="chart-container" id="lineBox">
+                <h4 class="chart-title">FLUJO DE CAJA 🔍</h4>
                 <canvas id="lineChart"></canvas>
             </div>
-            <div class="chart-container">
-                <h4 class="chart-title">GASTOS POR CATEGORÍA</h4>
+            <div class="chart-container" id="pieBox">
+                <h4 class="chart-title">GASTOS POR CATEGORÍA 🔍</h4>
                 <canvas id="pieChart"></canvas>
             </div>
-        </div>
+        </main>
 
         <div class="glass-panel history-panel">
             <h3>Historial</h3>
-            <div id="list"></div>
+            <div id="list" class="transaction-list"></div>
         </div>
     </div>
 </div>
