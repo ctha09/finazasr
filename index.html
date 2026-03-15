@@ -1,20 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
-
-  <head>
-    <meta charset="UTF-8">
-    <title>Untitled</title>
-    <link rel="stylesheet" href="./style.css">
-
-  </head>
-    
-  <body>
-  <!DOCTYPE html>
 <html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinanceFlow Elite | Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FinanceFlow Elite Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
@@ -24,30 +13,30 @@
 <div class="container">
     <header>
         <h1 class="logo">💎 FinanceFlow Elite</h1>
-        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 MODO OSCURO</button>
+        <button class="theme-btn" id="themeBtn">🌙 MODO OSCURO</button>
     </header>
 
     <div class="kpi-row">
         <div class="kpi-card">
-            <span class="kpi-label">BALANCE GLOBAL</span>
+            <span class="kpi-label">BALANCE NETO</span>
             <div class="kpi-value" id="kpi-balance">$0</div>
         </div>
         <div class="kpi-card">
-            <span class="kpi-label">TOTAL INGRESOS</span>
+            <span class="kpi-label">INGRESOS</span>
             <div class="kpi-value income-text" id="kpi-in">$0</div>
         </div>
         <div class="kpi-card">
-            <span class="kpi-label">TOTAL GASTOS</span>
+            <span class="kpi-label">GASTOS</span>
             <div class="kpi-value expense-text" id="kpi-out">$0</div>
         </div>
     </div>
 
     <div class="db-grid">
-        <aside class="glass-panel">
+        <aside class="glass-panel form-section">
             <h3>Registro</h3>
             <div class="form-group">
                 <label>Descripción</label>
-                <input type="text" id="desc" placeholder="Ej: Supermercado">
+                <input type="text" id="desc" placeholder="Ej: Pago de Alquiler">
             </div>
             <div class="form-group">
                 <label>Monto</label>
@@ -61,19 +50,20 @@
                     <option value="Ocio">🎬 Ocio</option>
                     <option value="Salud">💊 Salud</option>
                     <option value="Transporte">🚗 Transporte</option>
+                    <option value="Otros">📦 Otros</option>
                 </select>
             </div>
-            <button class="btn-add" onclick="add()">Registrar Operación</button>
-            <button class="btn-clear" onclick="clearAll()">BORRAR HISTORIAL</button>
+            <button class="btn-add" id="addBtn">Registrar Operación</button>
+            <button class="btn-clear" id="clearBtn">BORRAR TODO</button>
         </aside>
 
         <div class="charts-col">
             <div class="chart-container">
-                <h4 class="chart-title">TENDENCIA FINANCIERA</h4>
+                <h4 class="chart-title">FLUJO DE PATRIMONIO</h4>
                 <canvas id="lineChart"></canvas>
             </div>
             <div class="chart-container">
-                <h4 class="chart-title">DISTRIBUCIÓN DE GASTOS</h4>
+                <h4 class="chart-title">GASTOS POR CATEGORÍA</h4>
                 <canvas id="pieChart"></canvas>
             </div>
         </div>
@@ -85,11 +75,15 @@
     </div>
 </div>
 
+<div id="chartModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div class="modal-body">
+            <canvas id="zoomedChart"></canvas>
+        </div>
+    </div>
+</div>
+
 <script src="script.js"></script>
 </body>
-</html>
-    <script  src="./script.js"></script>
-
-  </body>
-  
 </html>
