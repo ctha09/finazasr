@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    <link rel="stylesheet" href="./style.css">
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceFlow Elite | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1 class="logo">💎 FinanceFlow Elite</h1>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 MODO OSCURO</button>
+    </header>
+
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <span class="kpi-label">BALANCE GLOBAL</span>
+            <div class="kpi-value" id="kpi-balance">$0</div>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">TOTAL INGRESOS</span>
+            <div class="kpi-value income-text" id="kpi-in">$0</div>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">TOTAL GASTOS</span>
+            <div class="kpi-value expense-text" id="kpi-out">$0</div>
+        </div>
+    </div>
+
+    <div class="db-grid">
+        <aside class="glass-panel">
+            <h3>Registro</h3>
+            <div class="form-group">
+                <label>Descripción</label>
+                <input type="text" id="desc" placeholder="Ej: Supermercado">
+            </div>
+            <div class="form-group">
+                <label>Monto</label>
+                <input type="number" id="amt" placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label>Categoría</label>
+                <select id="cat">
+                    <option value="Ingreso">📈 Ingreso</option>
+                    <option value="Comida">🍕 Comida</option>
+                    <option value="Ocio">🎬 Ocio</option>
+                    <option value="Salud">💊 Salud</option>
+                    <option value="Transporte">🚗 Transporte</option>
+                </select>
+            </div>
+            <button class="btn-add" onclick="add()">Registrar Operación</button>
+            <button class="btn-clear" onclick="clearAll()">BORRAR HISTORIAL</button>
+        </aside>
+
+        <div class="charts-col">
+            <div class="chart-container">
+                <h4 class="chart-title">TENDENCIA FINANCIERA</h4>
+                <canvas id="lineChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h4 class="chart-title">DISTRIBUCIÓN DE GASTOS</h4>
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+
+        <div class="glass-panel history-panel">
+            <h3>Historial</h3>
+            <div id="list"></div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+    <script  src="./script.js"></script>
+
+  </body>
+  
+</html>
